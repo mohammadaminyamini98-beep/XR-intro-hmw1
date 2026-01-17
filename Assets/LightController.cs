@@ -1,25 +1,34 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class LightController : MonoBehaviour
 {
-    private UnityEngine.Light lightComponent;
+    private Light lightComponent;
 
-    void Awake()
+    [Header("Input Action")]
+    public InputActionReference action;
+
+    private bool isRed = false;
+
+    void Start()
     {
-        lightComponent = GetComponent<UnityEngine.Light>();
+        lightComponent = GetComponent<Light>();
 
         if (lightComponent == null)
-            Debug.LogError("No Light component found on this GameObject!", this);
-        else
-            Debug.Log("LightController ready. Press Tab.", this);
-    }
-
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Tab))
         {
-            Debug.Log("Tab pressed!", this);
-            lightComponent.color = new Color32(217, 16, 16, 255);
+            Debug.LogError("No Light component found on this GameObject!", this);
+            return;
         }
+
+        action.action.Enable();
+        action.action.performed += (ctx) =>
+        {
+            if (isRed)
+                lightComponent.color = Color.white;
+            else
+                lightComponent.color = new Color32(217, 16, 16, 255);
+
+            isRed = !isRed;
+        };
     }
 }
